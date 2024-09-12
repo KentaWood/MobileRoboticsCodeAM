@@ -1,19 +1,26 @@
 import .communication
 import ..led
 import ..motors
+import ..display
 
-class LedBlinker implements Communicator:
+class GoToGoalOpen implements Communicator:
 
-  led := Led
   state := Communicator.DISABLED
 
-  
-  
+  led/Led := Led
+  display/Display := Display --inverted=true
+  motors/Motors := Motors
 
   constructor:
     led.off
+    motors.stop
 
-  on-start address port: print "$address:$port"
+  on-start address port: 
+    print "$address:$port"
+    display.add-text "$address"
+    display.add-text --y=16 "$port"
+    display.add-text --y=24 "Alex + Kerick + Max"
+
   on-open: enable
   on-close: disable
   on-message message:
@@ -34,7 +41,10 @@ class LedBlinker implements Communicator:
     print "Disabling"
     state = Communicator.DISABLED
     led.off
+    motors.stop
 
 main:
-  led-blinker := LedBlinker
-  comm := WsCommunication led-blinker --heartbeat-ms=1000
+  goToGoalOpen := GoToGoalOpen
+  comm := WsCommunication goToGoalOpen --heartbeat-ms=1000
+
+  
