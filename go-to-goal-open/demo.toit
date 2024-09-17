@@ -18,8 +18,9 @@ class GoToGoalOpen implements Communicator:
   on-start address port: 
     print "$address:$port"
     display.add-text "$address"
-    display.add-text --y=16 "$port"
-    display.add-text --y=24 "Alex + Kerick + Max"
+    display.add-text --y=36 "$port"
+    display.add-text --y=60 "Alex + Max"
+    display.draw
 
   on-open: enable
   on-close: disable
@@ -34,19 +35,36 @@ class GoToGoalOpen implements Communicator:
     if state == Communicator.ENABLED: return
     print "Enabling"
     state = Communicator.ENABLED
-    led.on
+    // led.on
 
   disable:
     if state == Communicator.DISABLED: return
     print "Disabling"
     state = Communicator.DISABLED
-    led.off
+    // led.off
     motors.stop
 
 main:
   goToGoalOpen := GoToGoalOpen
   comm := WsCommunication goToGoalOpen --heartbeat-ms=1000
+  print "here0"
 
-  display
+  while true:
+      if goToGoalOpen.is-enabled:
+          print "here1"
+          goToGoalOpen.led.on
+          print "here2"
 
-  
+          sleep --ms=0_250
+          goToGoalOpen.led.off
+          sleep --ms=0_250
+          print "here3"
+          break
+      else:
+          goToGoalOpen.led.off
+          break
+
+
+    //   display
+
+    
