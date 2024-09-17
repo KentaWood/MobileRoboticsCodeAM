@@ -47,4 +47,6 @@ main:
   goToGoalOpen := GoToGoalOpen
   comm := WsCommunication goToGoalOpen --heartbeat-ms=1000
 
+  display
+
   
