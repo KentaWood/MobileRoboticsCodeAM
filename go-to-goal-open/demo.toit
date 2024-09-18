@@ -6,7 +6,6 @@ import ..display
 class GoToGoalOpen implements Communicator:
 
   state := Communicator.DISABLED
-
   led/Led := Led
   display/Display := Display --inverted=true
   motors/Motors := Motors
@@ -35,36 +34,35 @@ class GoToGoalOpen implements Communicator:
     if state == Communicator.ENABLED: return
     print "Enabling"
     state = Communicator.ENABLED
-    // led.on
+    led.on
+    print"enable"
+
+    // motors.set-speed-forward 0.2
 
   disable:
     if state == Communicator.DISABLED: return
     print "Disabling"
     state = Communicator.DISABLED
-    // led.off
+    led.off
     motors.stop
 
 main:
   goToGoalOpen := GoToGoalOpen
-  comm := WsCommunication goToGoalOpen --heartbeat-ms=1000
-  print "here0"
+  comm := WsCommunication goToGoalOpen --heartbeat-ms=250
+  print "Starting communication..."
 
-  while true:
-      if goToGoalOpen.is-enabled:
-          print "here1"
-          goToGoalOpen.led.on
-          print "here2"
-
-          sleep --ms=0_250
-          goToGoalOpen.led.off
-          sleep --ms=0_250
-          print "here3"
-          break
-      else:
-          goToGoalOpen.led.off
-          break
-
-
-    //   display
+  // while true:
+  //     if goToGoalOpen.is-enabled:
+  //         print "Enabled - LED Blinking"
+          
+  //         goToGoalOpen.led.on
+  //         sleep --ms=250
+  //         goToGoalOpen.led.off
+  //         sleep --ms=250
+          
+  //     else:
+  //         print "else"
+  //         goToGoalOpen.led.off
+  //         break
 
     
