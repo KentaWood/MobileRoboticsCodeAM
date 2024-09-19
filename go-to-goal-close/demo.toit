@@ -3,7 +3,7 @@ import ..led
 import ..motors
 import ..display
 
-class GoToGoalOpen implements Communicator:
+class goToGoalClosed implements Communicator:
 
   state := Communicator.DISABLED
   led/Led := Led
@@ -46,18 +46,25 @@ class GoToGoalOpen implements Communicator:
 
   goToGoal:
     forward-time := 5_000
-    while true:
-      if is-enabled:
-        led.on
-        sleep --ms=250
-        led.off
-        sleep --ms=250
-      else:
-        print "Snooze"
-        sleep --ms=3_000
+
+    motor-pwm := 0.3
+    last-encoder := 0
+
+    while motor-pwm > 0:
+
+      print "Testing $motor-pwm"
+      last-encoder = motors.right-encoder.get-speed
+      //last-encoder = motors.left-encoder.get-speed
+      motors.set-speed-right motor-pwm
+      sleep --ms=0_500
       
-
-
+      if last-encoder == motors.left-encoder.get-speed:
+        motor-pwm += 0.01
+        print "Motor Lowest Motor PWM is $motor-pwm"
+        motors.stop
+        break
+      
+      motor-pwm -= 0.01
 
       // if is-enabled:
       //   print "Lets go!"
@@ -72,11 +79,11 @@ class GoToGoalOpen implements Communicator:
   
 
 main:
-  goToGoalOpen := GoToGoalOpen
-  comm := WsCommunication goToGoalOpen --heartbeat-ms=1000
+  goToGoalClosed := goToGoalClosed
+  comm := WsCommunication goToGoalClosed --heartbeat-ms=100000
   print "Starting communication..."
 
-  goToGoalOpen.goToGoal
+  goToGoalClosed.goToGoal
 
   
       
