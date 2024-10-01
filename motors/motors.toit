@@ -71,6 +71,13 @@ class Encoder:
     speed := distance / time-delta
     return speed
 
+  get-distance:
+    count := unit.value
+    // unit.clear
+    rotation := count.to-float / COUNTS-PER-ROTATION
+    distance := rotation * WHEEL-CIRCUMFERENCE
+    return distance
+
   close:
     channel.close
     unit.close
