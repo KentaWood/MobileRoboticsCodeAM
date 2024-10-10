@@ -1,30 +1,64 @@
-typedef enum { LED_ON = LOW, LED_OFF = HIGH } LedState;
+#ifndef DISPLAY_H
+#define DISPLAY_H
 
-class LedBlinker {
- public:
-  LedState ledState;
-  unsigned long blinkInterval;
-  unsigned long blinkLastTime;
+#include <U8x8lib.h>
+#include <WiFi.h>
 
-  LedBlinker(unsigned long interval) : ledState(LED_OFF), blinkInterval(interval), blinkLastTime(0) {}
+class Display {
+public:
+    // Constructor
+    Display(int port, const char* ssid) 
+        : port(port), ssid(ssid), u8x8(U8X8_PIN_NONE) {}
 
-  void setup() {
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, ledState);
-  }
+    // Initialize the display and WiFi
+    void setup() {
+        // Initialize the OLED display
+        u8x8.begin();
+        u8x8.setFlipMode(1);  // Rotate the display 180 degrees if needed
 
-  void loopStep(bool isEnabled) {
-    // Update for blinking the builtin LED
-    if (isEnabled) {
-      unsigned long now = millis();
-      if (now - blinkLastTime > blinkInterval) {
-        blinkLastTime = now;
+        // Initialize WiFi connection
+        WiFi.begin(ssid);
+        Serial.print("Connecting to WiFi");
+        // Wait until connected
+        while (WiFi.status() != WL_CONNECTED) {
+            delay(500);
+            Serial.print(".");
+        }
+        Serial.println("\nWiFi connected.");
+        Serial.print("IP Address: ");
+        Serial.println(WiFi.localIP());
 
-        ledState = (ledState == LED_ON) ? LED_OFF : LED_ON;
-        digitalWrite(LED_BUILTIN, ledState);
-      }
-    } else {
-      digitalWrite(LED_BUILTIN, LED_OFF);
+        // Store the IP address
+        ip = WiFi.localIP();
     }
-  }
+
+    // Update the display with current information
+    void loopStep() {
+        u8x8.setFont(u8x8_font_chroma48medium8_r);
+        u8x8.clear();  // Clear the display before drawing new content
+        
+        // Display Title
+        u8x8.drawString(0, 0, "AW & ML Robot");
+        
+        // Display Port Information
+        char buffer[30];
+        snprintf(buffer, sizeof(buffer), "Port: %d", port);
+        u8x8.drawString(0, 1, buffer);
+
+
+        ip = WiFi.localIP();
+        snprintf(buffer, sizeof(buffer), "IP: %s", ip.toString().c_str());
+        u8x8.drawString(0, 2, buffer);
+
+
+        u8x8.setInverseFont(0);
+    }
+
+private:
+    int port;                  // Member variable for port
+    const char* ssid;          // Member variable for SSID
+    U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8; // U8x8 display object
+    IPAddress ip;              // Member variable for IP address
 };
+
+#endif // DISPLAY_H

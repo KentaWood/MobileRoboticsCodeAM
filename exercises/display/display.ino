@@ -1,5 +1,10 @@
-#include "ledblinker.h"
-#include "wscommunicator.h"
+#include "display.h"
+#include <Arduino.h>
+#include <U8x8lib.h>
+
+#ifdef U8X8_HAVE_HW_SPI
+#include <SPI.h>
+#endif
 
 //
 // Global state
@@ -7,29 +12,30 @@
 
 // Network configuration
 const char* SSID = "Pomona";
-const uint16_t PORT = 8181;
-const unsigned long HEARTBEAT_INTERVAL = 1000;
-WSCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
+const int PORT = 8181; // Changed from uint16_t to int for consistency
 
-// LED Blinking configuration
-const unsigned long BLINK_INTERVAL = 250;
-LedBlinker ledBlinker(BLINK_INTERVAL);
+// Display object
+Display myDisplay(PORT, SSID);
 
-//
-// Setup
-//
+// Removed redundant u8x8 object to prevent conflicts
 
-void setup() {
-  Serial.begin(115200);
-  wsCommunicator.setup();
-  ledBlinker.setup();
+void setup(void)
+{
+    // Initialize Serial for debugging (optional but recommended)
+    Serial.begin(115200);
+    while (!Serial) {
+        ; // Wait for Serial to initialize
+    }
+    Serial.println("Initializing Display...");
+    
+    myDisplay.setup(); // Added missing semicolon
+    Serial.println("Display Initialized.");
 }
 
-//
-// Loop
-//
+void loop(void){
+    myDisplay.loopStep(); // Added missing semicolon
+    delay(1000); // Optional: Add a delay to control update frequency
 
-void loop() {
-  wsCommunicator.loopStep();
-  ledBlinker.loopStep(wsCommunicator.isEnabled());
+    // Optional: Add Serial output to monitor updates
+    Serial.println("Display Updated.");
 }
