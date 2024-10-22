@@ -44,7 +44,6 @@ void loop(void)
 
     motorControl.loopStep(wsCommunicator.isEnabled());
     kinematics.loopStep(
-        wsCommunicator.isEnabled(),
         motorControl.getLeftVelocity(),
         motorControl.getRightVelocity(),
         DELAY_INTERVAL);
