@@ -14,7 +14,7 @@ For each motor
 // https://docs.espressif.com/projects/esp-idf/en/stable/esp32/migration-guides/release-5.x/5.0/peripherals.html#pulse-counter-driver
 
 #include <ESP32Encoder.h>
-#include <Arduino.h>
+// #include <Arduino.h>
 
 #include "intervaltimer.h"
 
