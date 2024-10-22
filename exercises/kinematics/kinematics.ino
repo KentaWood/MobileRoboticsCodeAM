@@ -12,7 +12,7 @@
 // Global state
 //
 
-const unsigned long DELAY_INTERVAL = 250;
+const float DELAY_INTERVAL = 250;
 
 // Network configuration
 const char *SSID = "Pomona";
