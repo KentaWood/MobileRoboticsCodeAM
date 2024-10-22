@@ -23,11 +23,11 @@ WsCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
 // Motor configuration
 // NOTE: Several of the fields contain arbitrary values that must be revised
 // max velocity limits how much the motor will change per loop
-MotorControl motorControl(44, 1.0, 1.0, 1.0, 5.0, 20, DELAY_INTERVAL);
+MotorControl motorControl(0.44, 0.5, 0.5, 1.0, 0.4, 20, DELAY_INTERVAL);
 
 // Pose Estimation configuration
-const int WHEEL_RADIUS = 7;
-const int WHEEL_SPACING = 19;
+const int WHEEL_RADIUS = 0.07;
+const int WHEEL_SPACING = 0.19;
 Kinematics kinematics(WHEEL_RADIUS, WHEEL_SPACING, DELAY_INTERVAL);
 
 void setup(void)
@@ -35,6 +35,7 @@ void setup(void)
     Serial.begin(115200);
     wsCommunicator.setup();
     motorControl.setup();
+    motorControl.setTargetVelocity(0.3);
     kinematics.setup();
 }
 
@@ -45,8 +46,7 @@ void loop(void)
     motorControl.loopStep(wsCommunicator.isEnabled());
     kinematics.loopStep(
         motorControl.getLeftVelocity(),
-        motorControl.getRightVelocity(),
-        DELAY_INTERVAL);
+        motorControl.getRightVelocity());
 
-    delay(DELAY_INTERVAL);
+    //delay(DELAY_INTERVAL);
 }

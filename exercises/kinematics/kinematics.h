@@ -8,44 +8,45 @@
 class Kinematics
 {
 public:
-    int x;
-    int y;
-    int theta;
+    float x;
+    float y;
+    float theta;
 
-    int wheel_radius;
-    int wheel_spacing;
+    float wheel_radius;
+    float wheel_spacing;
 
     IntervalTimer timer;
 
-    Kinematics(int radius, int spacing, long interval) : x(0), y(0), theta(0), wheel_radius(radius), wheel_spacing(spacing), timer(interval) {}
+    Kinematics(float radius, float spacing, unsigned long interval) : x(0.0), y(0.0), theta(0.0), wheel_radius(radius), wheel_spacing(spacing), timer(interval) {}
 
     void setup()
     {
         // Nothing to set up
     }
 
-    void loopStep(float leftVelocity, float rightVelocity, float dt)
+    void loopStep(float leftVelocity, float rightVelocity)
     {
         if(timer) {
-            update_position(leftVelocity, rightVelocity, dt);
+            update_position(leftVelocity, rightVelocity, timer.getLastDelta()/1000);
         }
     }
 
     void update_position(float leftVelocity, float rightVelocity, float dt)
     {
-        int Rxdot = wheel_radius * (rightVelocity + leftVelocity) / 2;
-        int Rthetadot = wheel_radius * (rightVelocity - leftVelocity) / wheel_spacing;
+        float Rxdot =  (rightVelocity + leftVelocity) / 2;
+        float Rthetadot = (rightVelocity - leftVelocity) / wheel_spacing;
 
         x += (Rxdot * cos(theta)) * dt;
         y += (Rxdot * sin(theta)) * dt;
-        theta += Rthetadot;
+        theta += Rthetadot * dt;
 
         print_pose();
+        printf("L VEL: %f, R VEL: %f, DT: %f\n", leftVelocity, rightVelocity, dt);
     }
 
     void print_pose()
     {
-        printf("X: %d, Y: %d, THETA: %f", x, y, theta);
+        printf("X: %f Y: %f, THETA: %f\n", x, y, theta);
     }
 };
 

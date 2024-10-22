@@ -1,4 +1,5 @@
 #include "display.h"
+#include "wscommunicator.h"
 #include <Arduino.h>
 #include <U8x8lib.h>
 
@@ -13,29 +14,33 @@
 // Network configuration
 const char* SSID = "Pomona";
 const int PORT = 8181; // Changed from uint16_t to int for consistency
+IPAddress clientIP;
 
 // Display object
 Display myDisplay(PORT, SSID);
 
-// Removed redundant u8x8 object to prevent conflicts
+//websocket Communicator Object 
+const unsigned long HEARTBEAT_INTERVAL = 1000;
+WSCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
+
+
 
 void setup(void)
 {
-    // Initialize Serial for debugging (optional but recommended)
     Serial.begin(115200);
+    wsCommunicator.setup();
+
     while (!Serial) {
-        ; // Wait for Serial to initialize
+        ; 
     }
     Serial.println("Initializing Display...");
     
-    myDisplay.setup(); // Added missing semicolon
+    myDisplay.setup(); 
     Serial.println("Display Initialized.");
 }
 
 void loop(void){
-    myDisplay.loopStep(); // Added missing semicolon
-    delay(1000); // Optional: Add a delay to control update frequency
-
-    // Optional: Add Serial output to monitor updates
+    wsCommunicator.loopStep();
+    myDisplay.loopStep();
     Serial.println("Display Updated.");
 }

@@ -14,26 +14,24 @@ public:
     void setup() {
         // Initialize the OLED display
         u8x8.begin();
-        u8x8.setFlipMode(1);  // Rotate the display 180 degrees if needed
+        u8x8.setFlipMode(1);  // Rotate the display 180 degrees
 
-        // Initialize WiFi connection
-        WiFi.begin(ssid);
-        Serial.print("Connecting to WiFi");
-        // Wait until connected
-        while (WiFi.status() != WL_CONNECTED) {
-            delay(500);
-            Serial.print(".");
-        }
-        Serial.println("\nWiFi connected.");
-        Serial.print("IP Address: ");
-        Serial.println(WiFi.localIP());
+        // // Initialize WiFi connection
+        // WiFi.begin(ssid);
+        // Serial.print("Connecting to WiFi");
+        // // Wait until connected
+        // while (WiFi.status() != WL_CONNECTED) {
+        //     delay(500);
+        //     Serial.print(".");
+        // }
+    
 
-        // Store the IP address
-        ip = WiFi.localIP();
+        // // Store the IP address
+        // ip = WiFi.localIP();
     }
 
     // Update the display with current information
-    void loopStep() {
+    void loopStep(IPAddress ip) {
         u8x8.setFont(u8x8_font_chroma48medium8_r);
         u8x8.clear();  // Clear the display before drawing new content
         
@@ -55,10 +53,8 @@ public:
     }
 
 private:
-    int port;                  // Member variable for port
-    const char* ssid;          // Member variable for SSID
-    U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8; // U8x8 display object
-    IPAddress ip;              // Member variable for IP address
+    int port;                  
+    const char* ssid;          
+    U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8; 
+    IPAddress ip;              
 };
-
-#endif // DISPLAY_H
