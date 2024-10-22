@@ -27,7 +27,7 @@ public:
     void loopStep(float leftVelocity, float rightVelocity)
     {
         if(timer) {
-            update_position(leftVelocity, rightVelocity, timer.getLastDelta()/1000);
+            update_position(leftVelocity, rightVelocity, ((float)timer.getLastDelta())/1000.0);
         }
     }
 
@@ -36,18 +36,21 @@ public:
         float Rxdot =  (rightVelocity + leftVelocity) / 2;
         float Rthetadot = (rightVelocity - leftVelocity) / wheel_spacing;
 
+        printf("Rxdot: %f, Rthetadot: %f\n", Rxdot, Rthetadot);
+
         x += (Rxdot * cos(theta)) * dt;
         y += (Rxdot * sin(theta)) * dt;
         theta += Rthetadot * dt;
 
-        print_pose();
+        // print_pose();
+        printf("X: %f Y: %f, THETA: %f\n", x, y, theta);
         printf("L VEL: %f, R VEL: %f, DT: %f\n", leftVelocity, rightVelocity, dt);
     }
 
-    void print_pose()
-    {
-        printf("X: %f Y: %f, THETA: %f\n", x, y, theta);
-    }
+    // void print_pose()
+    // {
+    //     printf("X: %f Y: %f, THETA: %f\n", x, y, theta);
+    // }
 };
 
 #endif // KINEMATICS_H

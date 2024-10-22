@@ -26,8 +26,8 @@ WsCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
 MotorControl motorControl(0.44, 0.5, 0.5, 1.0, 0.4, 20, DELAY_INTERVAL);
 
 // Pose Estimation configuration
-const int WHEEL_RADIUS = 0.07;
-const int WHEEL_SPACING = 0.19;
+const float WHEEL_RADIUS = 0.07;
+const float WHEEL_SPACING = 0.19;
 Kinematics kinematics(WHEEL_RADIUS, WHEEL_SPACING, DELAY_INTERVAL);
 
 void setup(void)
@@ -43,7 +43,7 @@ void loop(void)
 {
     wsCommunicator.loopStep();
 
-    motorControl.loopStep(wsCommunicator.isEnabled());
+    motorControl.loopStep(true);
     kinematics.loopStep(
         motorControl.getLeftVelocity(),
         motorControl.getRightVelocity());
