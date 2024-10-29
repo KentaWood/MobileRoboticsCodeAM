@@ -36,15 +36,15 @@ public:
         float Rxdot =  (rightVelocity + leftVelocity) / 2;
         float Rthetadot = (rightVelocity - leftVelocity) / wheel_spacing;
 
-        printf("Rxdot: %f, Rthetadot: %f\n", Rxdot, Rthetadot);
+        // printf("Rxdot: %f, Rthetadot: %f\n", Rxdot, Rthetadot);
 
         x += (Rxdot * cos(theta)) * dt;
         y += (Rxdot * sin(theta)) * dt;
         theta += Rthetadot * dt;
 
         // print_pose();
-        printf("X: %f Y: %f, THETA: %f\n", x, y, theta);
-        printf("L VEL: %f, R VEL: %f, DT: %f\n", leftVelocity, rightVelocity, dt);
+        // printf("X: %f Y: %f, THETA: %f\n", x, y, theta);
+        // printf("L VEL: %f, R VEL: %f, DT: %f\n", leftVelocity, rightVelocity, dt);
     }
 
     // void print_pose()

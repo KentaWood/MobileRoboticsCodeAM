@@ -15,6 +15,12 @@
 //
 
 const float DELAY_INTERVAL = 250;
+const int num_samples = 40;
+float x[num_samples];
+float y[num_samples];
+float theta[num_samples];
+int i = 0;
+
 
 // Network configuration
 const char *SSID = "Pomona";
@@ -23,7 +29,7 @@ const unsigned long HEARTBEAT_INTERVAL = 1000;
 WsCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
 
 //Display 
-Display display();
+Display display;
 
 // Motor configuration
 // NOTE: Several of the fields contain arbitrary values that must be revised
@@ -43,21 +49,54 @@ void setup(void)
     motorControl.setTargetVelocity(0.3);
     kinematics.setup();
     display.setup();
+
 }
 
 void loop(void)
 {
-    wsCommunicator.loopStep();
+    printf("in loop");
+    if( i < num_samples ){
+        wsCommunicator.loopStep();
 
-    motorControl.loopStep(true);
-    kinematics.loopStep(
-        motorControl.getLeftVelocity(),
-        motorControl.getRightVelocity());
-    
-    display.drawString(0, 0, "AW & ML Robot");
-    display.drawString(1, 0, ("X: %f Y: %f", kinematics.x, kinematics.y) );
-    display.drawString(2, 0, ("THETA: %f", kinematics.theta));
+        motorControl.loopStep(true);
+        kinematics.loopStep(
+            motorControl.getLeftVelocity(),
+            motorControl.getRightVelocity());
+        
+        printf("X: %f Y: %f\n", kinematics.x, kinematics.y);
+        printf("THETA: %f\n", kinematics.theta);
 
-    //delay(DELAY_INTERVAL);
+
+        x[i] = kinematics.x;
+        y[i] = kinematics.y;
+        theta[i] = kinematics.theta;
+        i ++;
+    }
+    else{
+        // Print all x values first
+        printf("\nx values:\n");
+        for (i = 0; i < num_samples; i++) {
+            printf("%.2f,",  x[i]);
+        }
+
+        // Print all y values next
+        printf("\ny values:\n");
+        for (i = 0; i < num_samples; i++) {
+            printf("%.2f,",  y[i]);
+        }
+
+        // Print all theta values last
+        printf("\ntheta values:\n");
+        for (i = 0; i < num_samples; i++) {
+            printf("%.2f,",  theta[i]);
+        }
+
+        printf("end");
+
+        // delay(10000000000000000);
+    }
+
+    delay(DELAY_INTERVAL);
+        
 
 }
