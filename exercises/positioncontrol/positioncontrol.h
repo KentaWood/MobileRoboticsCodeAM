@@ -1,9 +1,10 @@
 #ifndef POSITION_CONTROL_H
 #define POSITION_CONTROL_H
 
-#include "forwarkinematics.h" 
+
 #include "../../include/intervaltimer.h"
 #include "../kinematics/kinematics.h"
+#include <math.h>
 
 class PositionControl {
   float goalX;
@@ -36,7 +37,7 @@ public:
 
   void setup() {}
 
-  void loopStep(Kinematics pose, float& l_Velocity, float& r_Velocity) {
+  bool loopStep(Kinematics pose, float& l_Velocity, float& r_Velocity) {
     if(!updateTimer){
       return false;
     }
@@ -57,8 +58,8 @@ public:
     float thetaDot = min(K_orientation * angleError, maxAngularVelocity);
 
     // Inverse kinematics (set motor commands based on desired velocities)
-    leftVelocity = v - thetaDot * trackWidth / 2.0;
-    rightVelocity = v + thetaDot * trackWidth / 2.0;
+    l_Velocity = v - thetaDot * trackWidth / 2.0;
+    r_Velocity = v + thetaDot * trackWidth / 2.0;
 
     return true;
 
