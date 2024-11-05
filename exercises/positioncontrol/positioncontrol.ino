@@ -79,7 +79,7 @@ void setup(void)
 void reset(){
     kinematics.x = 0;
     kinematics.y = 0;
-    kinematics.theta 0;
+    kinematics.theta = 0;
 }
 
 void loop(void)
