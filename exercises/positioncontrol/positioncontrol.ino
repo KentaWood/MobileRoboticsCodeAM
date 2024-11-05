@@ -73,7 +73,7 @@ void loop(void)
 {
     wsCommunicator.loopStep();
 
-    motorControl.loopStep(true);
+    motorControl.loopStep(wsCommunicator.isEnabled());
     float leftVelocity = motorControl.getLeftVelocity();
     float rightVelocity = motorControl.getRightVelocity();
 
@@ -85,12 +85,14 @@ void loop(void)
     if(shouldUpdateVelocities){
         motorControl.setTargetVelocity(leftVelocity, rightVelocity);
     }
+
+    wsCommunicator.
     
 
     printf("X: %f Y: %f\n", kinematics.x, kinematics.y);
     printf("THETA: %f\n", kinematics.theta);
 
-    delay(DELAY_INTERVAL);
+    
         
 
 }
