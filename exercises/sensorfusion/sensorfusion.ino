@@ -1,5 +1,5 @@
 #include "../../include/kinematics.h"
-#include "../../include/kinematics.h"
+#include "../../include/positioncontrol.h"
 #include "../../include/motorcontrol.h"
 #include "../../include/wscommunicator.h"
 #include "../../include/display.h"
@@ -82,7 +82,7 @@ void setup(void)
 void reset(){
     kinematics.x = 0;
     kinematics.y = 0;
-    kinematics.theta 0;
+    kinematics.theta = 0;
 }
 
 void loop(void)
