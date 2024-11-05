@@ -27,6 +27,10 @@ const unsigned long HEARTBEAT_INTERVAL = 1000;
 WsCommunicator wsCommunicator(SSID, PORT, HEARTBEAT_INTERVAL);
 
 
+//message timer
+const unsigned long MESSAGE_INTERVAL = 500;
+IntervalTimer messageTimer(MESSAGE_INTERVAL);
+
 //Display 
 Display display;
 
@@ -68,10 +72,24 @@ void setup(void)
     positionControl.setup();
 
 }
+//
+//Reset
+//
+
+void reset(){
+    kinematics.x = 0;
+    kinematics.y = 0;
+    kinematics.theta 0;
+}
 
 void loop(void)
 {
     wsCommunicator.loopStep();
+
+    if (wsCommunicator.resetFlagIsSet()){
+        reset();
+        wsCommunicator.clearResetFlag();
+    }
 
     motorControl.loopStep(wsCommunicator.isEnabled());
     float leftVelocity = motorControl.getLeftVelocity();
@@ -86,7 +104,18 @@ void loop(void)
         motorControl.setTargetVelocity(leftVelocity, rightVelocity);
     }
 
-    wsCommunicator.
+    
+
+
+    if (messageTimer){
+        char message[100];
+        
+        snprintf(message, sizeof(message), "x=%f y=%f theta=%f vl=%f vr=%f", kinematics.x, kinematics.y,kinematics.theta,leftVelocity,rightVelocity);
+    
+        //turn the string into a list of characters send the len() string
+        wsCommunicator.sendText(message, strlen(message));
+    }
+    
     
 
     printf("X: %f Y: %f\n", kinematics.x, kinematics.y);

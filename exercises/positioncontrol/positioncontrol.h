@@ -46,6 +46,7 @@ PositionControl(float goalX, float goalY, float goalThreshold, float maxLinearVe
 
     if (d < goalThreshold){
       r_Velocity = 0;
+      l_Velocity = 0;
       return true;
     }
 
