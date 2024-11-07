@@ -124,6 +124,6 @@ void loop(void)
     }
     
     printf("X: %f Y: %f\n", kinematics.x, kinematics.y);
-    printf("THETA: %f\n", kinematics.theta);
+    printf("Compass THETA: %f, Final THETA: %f\n", compass_theta, kinematics.theta);
 
 }
