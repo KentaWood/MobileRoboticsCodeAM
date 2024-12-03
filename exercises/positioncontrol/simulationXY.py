@@ -1,5 +1,4 @@
 import math
-import random
 import matplotlib.pyplot as plt
 
 # Define a class for the robot's pose (x, y, θ)
@@ -37,8 +36,8 @@ def position_control(pose, GOAL, K_POSITION, K_ORIENTATION, TRACK_WIDTH, MAX_LIN
 
     return v_left, v_right
 
-# Simulation loop with random additive errors
-def simulate_motion(pose, GOAL, TRACK_WIDTH, dt, TIME_END, K_POSITION, K_ORIENTATION, MAX_LINEAR_VELOCITY, MAX_ANGULAR_VELOCITY, wheel_radius, random_error_range=(-0.2, 0.2)):
+# Simulation loop
+def simulate_motion(pose, GOAL, TRACK_WIDTH, dt, TIME_END, K_POSITION, K_ORIENTATION, MAX_LINEAR_VELOCITY, MAX_ANGULAR_VELOCITY, wheel_radius):
     t = 0
     v_left, v_right = 0, 0
 
@@ -47,13 +46,8 @@ def simulate_motion(pose, GOAL, TRACK_WIDTH, dt, TIME_END, K_POSITION, K_ORIENTA
     y_vals = []
 
     while t < TIME_END:
-        v_left, v_right = position_control(pose, GOAL, K_POSITION, K_ORIENTATION, TRACK_WIDTH, MAX_LINEAR_VELOCITY, MAX_ANGULAR_VELOCITY)
-        
-        # Apply random additive error to each wheel's velocity
-        v_left += random.uniform(*random_error_range)
-        v_right += random.uniform(*random_error_range)
-
         pose = forward_kinematics(pose, v_left, v_right, dt, TRACK_WIDTH, wheel_radius)
+        v_left, v_right = position_control(pose, GOAL, K_POSITION, K_ORIENTATION, TRACK_WIDTH, MAX_LINEAR_VELOCITY, MAX_ANGULAR_VELOCITY)
         
         # Store values
         x_vals.append(pose.x)
@@ -71,37 +65,27 @@ def angle(pose, GOAL):
     return math.atan2(GOAL[1] - pose.y, GOAL[0] - pose.x)
 
 # Example parameters
-pose_initial = Pose(0, 0, 0)
+pose = Pose(0, 0, 0)
 TRACK_WIDTH = 0.07  
 wheel_radius = 0.07  
-dt = 0.1 
+dt = 0.25  
 TIME_END = 5  
-GOAL = (1, 1)  
-K_POSITION = 0.9  
-K_ORIENTATION = 1.52
-MAX_LINEAR_VELOCITY = 1.21 
-MAX_ANGULAR_VELOCITY = 1.13 
+GOAL = (1, 1)  # Set goal to (1, 1) as specified
+K_POSITION = 1.0  
+K_ORIENTATION = 1.0  
+MAX_LINEAR_VELOCITY = 1.0  
+MAX_ANGULAR_VELOCITY = 1.0  
 
-# Define different scenarios
-scenarios = [
-    ("No Error", (0, 0)),  # No random error
-    ("Random Right Wheel Error", (-0.3, 0.3)),  # Random error only on the right wheel
-    ("Random Left Wheel Error", (-0.2, 0.2)),  # Random error only on the left wheel
-    ("Random Errors on Both Wheels", (-0.2, 0.2))  # Random error on both wheels
-]
+# Run the simulation
+x_vals, y_vals = simulate_motion(pose, GOAL, TRACK_WIDTH, dt, TIME_END, K_POSITION, K_ORIENTATION, MAX_LINEAR_VELOCITY, MAX_ANGULAR_VELOCITY, wheel_radius)
 
-# Run simulations for each scenario
-plt.figure(figsize=(10, 10))
-for title, random_error in scenarios:
-    pose = Pose(pose_initial.x, pose_initial.y, pose_initial.θ)  # Reset pose for each simulation
-    x_vals, y_vals = simulate_motion(pose, GOAL, TRACK_WIDTH, dt, TIME_END, K_POSITION, K_ORIENTATION, MAX_LINEAR_VELOCITY, MAX_ANGULAR_VELOCITY, wheel_radius, random_error)
-    
-    plt.plot(x_vals, y_vals, label=f"{title}")
-    plt.scatter(GOAL[0], GOAL[1], c='red', marker='x')  # Mark the goal
-
+# Scatter plot of x vs y
+plt.figure(figsize=(8, 8))
+plt.scatter(x_vals, y_vals, c='blue', label='Path')
+plt.scatter(GOAL[0], GOAL[1], c='red', marker='x', label='Goal')  # Mark the goal
 plt.xlabel('x')
 plt.ylabel('y')
-plt.title('Robot Path towards Goal with Random Additive Wheel Errors')
+plt.title('Robot Path towards Goal (1, 1)')
 plt.legend()
 plt.grid(True)
 plt.show()

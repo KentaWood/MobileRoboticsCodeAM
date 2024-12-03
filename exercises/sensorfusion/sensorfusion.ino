@@ -3,7 +3,7 @@
 #include "../../include/motorcontrol.h"
 #include "../../include/wscommunicator.h"
 #include "../../include/display.h"
-#include <QMC5883LCompass.h>
+#include "../../include/compass.h"
 
 // #include <Arduino.h>
 #include <math.h>
@@ -59,8 +59,8 @@ const unsigned long PROPROTIONAL_CONTROL_INTERVAL = 250;
 
 PositionControl positionControl(GOAL_X, GOAL_Y, GOAL_THRESHOLD, MAX_LINEAR_VELOCITY, MAX_ANGULAR_VELOCITY, K_POSITION, K_ORIENTATION, WHEEL_SPACING, PROPROTIONAL_CONTROL_INTERVAL); 
 
-
-QMC5883LCompass compass;
+//Compass Object
+Compass compass;
 const float ALPHA = 0.5;
 
 void setup(void)
@@ -71,8 +71,7 @@ void setup(void)
     kinematics.setup();
     display.setup();
     positionControl.setup();
-    compass.init()
-    compass.setSmoothing(10,true);
+    compass.setup();
 
 }
 //
@@ -103,8 +102,8 @@ void loop(void)
     kinematics.loopStep(leftVelocity, rightVelocity);
 
     // Do compass to update theta
-    compass.read()
-    float compass_theta = compass.getAzimuth()
+    compass.loopStep();
+    float compass_theta = compass.getTheta();
     float sf_theta = ALPHA * kinematics.theta + (1 - ALPHA) * compass_theta;
     kinematics.theta = sf_theta;
 
@@ -121,9 +120,10 @@ void loop(void)
     
         //turn the string into a list of characters send the len() string
         wsCommunicator.sendText(message, strlen(message));
+        printf("X: %f Y: %f\n", kinematics.x, kinematics.y);
+        printf("Compass THETA: %f, Final THETA: %f\n", compass_theta, kinematics.theta);
     }
     
-    printf("X: %f Y: %f\n", kinematics.x, kinematics.y);
-    printf("Compass THETA: %f, Final THETA: %f\n", compass_theta, kinematics.theta);
+
 
 }
