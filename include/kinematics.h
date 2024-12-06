@@ -19,9 +19,10 @@ public:
 
     Kinematics(float radius, float spacing, unsigned long interval) : x(0.0), y(0.0), theta(0.0), wheel_radius(radius), wheel_spacing(spacing), timer(interval) {}
 
-    void setup()
+    void setup(float start_x, float start_y)
     {
-        // Nothing to set up
+        x = start_x;
+        y = start_y;
     }
 
     void loopStep(float leftVelocity, float rightVelocity)

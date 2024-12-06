@@ -7,6 +7,7 @@
 #include <math.h>
 
 class PositionControl {
+  
   float goalX;
   float goalY;
   float goalThreshold;
@@ -22,6 +23,9 @@ class PositionControl {
 
   
 public:
+
+bool goal_reached = false;
+
 PositionControl(float goalX, float goalY, float goalThreshold, float maxLinearVelocity, float maxAngularVelocity, float K_position, float K_orientation,float trackWidth, unsigned long interval)
 : goalX(goalX), 
   goalY(goalY), 
@@ -37,16 +41,28 @@ PositionControl(float goalX, float goalY, float goalThreshold, float maxLinearVe
 
   void setup() {}
 
+  void set_goal(float x, float y){
+    goalX = x;
+    goalY = y;
+  }
+
+  
+
   bool loopStep(Kinematics pose, float& l_Velocity, float& r_Velocity) {
+    
+    goal_reached = false;
+    
     if(!updateTimer){
       return false;
     }
 
     float d = sqrt((goalX - pose.x) * (goalX - pose.x) +  (goalY - pose.y) * (goalY - pose.y));
 
+    //
     if (d < goalThreshold){
       r_Velocity = 0;
       l_Velocity = 0;
+      goal_reached = true;
       return true;
     }
 

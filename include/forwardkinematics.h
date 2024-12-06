@@ -37,7 +37,10 @@ class ForwardKinematics {
   ForwardKinematics(float trackWidth, unsigned long interval)
       : trackWidth(trackWidth), pose(0, 0, 0), updateTimer(interval) {}
 
-  void setup() {}
+  void setup(float start_x, float start_y) {
+    pose.x = start_x;
+    pose.y = start_y;
+  }
 
   void loopStep(float leftVelocity, float rightVelocity) {
     if (updateTimer) {
